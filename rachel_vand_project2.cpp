@@ -83,20 +83,20 @@ binary number and saves it in a char string, destination.
 void decimal_to_binary(unsigned int changeme, char* destination)
 {
 int counter = 0;
-std::stack<char> st;
+std::stack<char> mystack;
 int remainder;
 for(counter = 0; counter < 32; counter++){
     if(changeme % 2 == 0){
-        st.push('0');
+        mystack.push('0');
     }else{
-        st.push('1');
+        mystack.push('1');
     }
     changeme/= 2;
 }
     counter = 0;
-    while(!st.empty()){
-        destination[counter] = st.top();
-        st.pop();
+    while(!mystack.empty()){
+        destination[counter] = mystack.top();
+        mystack.pop();
         counter++;
     }
     destination[counter] = '\0';
