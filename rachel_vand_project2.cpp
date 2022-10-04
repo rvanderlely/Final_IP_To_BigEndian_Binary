@@ -1,4 +1,4 @@
-/*
+/*******************************************************************************
 Name:       Rachel Vanderlerly
 Due Date:   September 30 2022
 Class:      Network Programming
@@ -8,7 +8,7 @@ Description: This program converts an IP v4 address, such as 198.17.223.4
 into network byte order in binary format, and then convert the binary value 
 into an equivalent decimal value, and then print the IP v4 address, 
 binary stream, and decimal value.  
-*/ 
+*******************************************************************************/ 
 #include <arpa/inet.h>
 #include <iostream>
 #include <string>
@@ -18,69 +18,74 @@ binary stream, and decimal value.
 #include <string.h>
 #define MAXSIZE 80
 
-
 using std::cout;
 using std::cin;
 using std::string;
 
-/**************************
-    Function Prototypes
-***************************/
+/****************************************************
+                Function Prototypes
+*****************************************************/
 void decimal_to_binary(unsigned int changeme, char* destination);    
 
-/**************************
-           Main 
-***************************/
+/***************************************************
+                        Main 
+*****************************************************/
 int main()
     {
-    char IPV4_address[MAXSIZE];         //A string holding the users input IPV4 address
-    char* IPV4_2D[4];                   //To hold the ipv4 numbers without the . in them
-	char binary_big_endian[MAXSIZE];
-    unsigned int big_decimal;           //hold the decimal number big endian
+    char IPV4_address[MAXSIZE];            //A string holding the users input IPV4 address
+    char* IPV4_2D[4];                      //To hold the ipv4 numbers without the . in them
+	char binary_big_endian[MAXSIZE];       //Holds the binary big endian value
+    char binary_little_endian[MAXSIZE];    //Holds the binary big endian value
+    unsigned int big_decimal;              //hold the decimal number big endian
+    unsigned int little_decimal;           //hold the decimal number big endian
     struct sockaddr_in mine;
-    std::string answer = "Y";
+    string answer = "Y";
 
 while (answer == "Y" || answer =="y")
     {
-
     //Get the IPV4 Address
     cout<<"Enter an IP4 Address:";
     fgets(IPV4_address,MAXSIZE,stdin);
 	IPV4_address[strlen(IPV4_address)-1] = '\0';
-    printf("Your IPV4 address is %s \n",IPV4_address);
-		
-    //Convert your IP Address to binary
-    cout<<inet_pton(AF_INET,IPV4_address,&(mine.sin_addr));
-    //cout<<" is the result of your inet_pton() call\n";
-    cout<<"Your result of inet_pton on IPV4 is "<<mine.sin_addr.s_addr<<"\n";
+	cout<<"\n\t\tIP Address Entered: "<<IPV4_address<<"\n";
+	cout<<"\t\t-----------------------------------\n";
+
+    //Convert your IP4 Address to binary using pton function
+    inet_pton(AF_INET,IPV4_address,&(mine.sin_addr));
     big_decimal = mine.sin_addr.s_addr;
-    cout<<"Your result of inet_pton on IPV4 is "<<big_decimal<<"\n";
-    //htonl(mine.sin_addr.s_addr);
+    cout<<"Big Endian Decimal Value:    "<<big_decimal<<"\n";
 
-    //Convert the number in s_addr to binary. 
-    //Right now its the decimal equivelent inside mine.sin_addr.s_addr
+    //Convert decimal to binary with dec to binary function and print
     decimal_to_binary(big_decimal,binary_big_endian);
-    printf("\nThe BIG endian of the binary number is %s \n",binary_big_endian);
+    printf("Big Endian Binary Value:     %s \n",binary_big_endian);
 
-    //Try to get little endian to print
-    //little_decimal = ntohl(big_decimal);
-    //cout<<"The little decimal is "<<little_decimal<<"\n";
+    //convert decimal big endian to decimal little endian and print
+    little_decimal = ntohl(big_decimal);
+    cout<<"Little Endian Decimal Value: "<<little_decimal<<"\n";
 
+    //Convert decimal little endian to binary little endian and print
+    decimal_to_binary(little_decimal,binary_little_endian);
+    cout<<"Little Endian Binary Value:  "<<binary_little_endian<<"\n";
 
-    cout<<"Do you want to run again?";
+    //Prompt user to run again
+    cout<<"\nDo you want to run again?";
     cin>>answer;
     cin.ignore();
     }
 return 0;
 }
 
+/*********************************************************
+                    decimal_to_binary 
+This function converts an unsigned int, changeme to a 
+binary number and saves it in a char string, destination.
+**********************************************************/
 void decimal_to_binary(unsigned int changeme, char* destination)
 {
 int counter = 0;
 std::stack<char> st;
 int remainder;
-for(counter = 0; counter < 32; counter++)
-{
+for(counter = 0; counter < 32; counter++){
     if(changeme % 2 == 0){
         st.push('0');
     }else{
@@ -96,40 +101,3 @@ for(counter = 0; counter < 32; counter++)
     }
     destination[counter] = '\0';
 };
-
-
-
-
-
-
-
-
-
-
-
-
-// //This function takes an unsigned integer and turns it to a char pointer containing the decimal equivelent. 
-// void decimal_to_binary(unsigned int changeme, char* destination)
-// {
-// int counter = 0;
-// int remainder;
-// for(counter = 0; counter < 32; counter++)
-//     {
-// 				std::cout << "in forloop ";
-//         remainder = changeme % 2;
-//         if (remainder == 1){
-//             destination[counter]= '1';
-//             //cout<<"I am adding 1 to spot"<<counter<<"\n";
-//         }
-//         else{
-//             destination[counter] = '0';
-//             //cout<<"I am adding 0 to spot"<<counter<<"\n";
-//         }
-//         changeme = changeme / 2;
-//     }
-// 		destination[counter] = '\0';
-//     cout<<"Changing the number to bianry";
-// };
-
-
-
